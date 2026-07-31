@@ -1,7 +1,7 @@
 import 'package:example/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sintia_system_design/sintia_system_design.dart';
+import 'package:sintia_design_system/sintia_design_system.dart';
 
 void main() {
   /// La showcase se prueba en escritorio: el drawer es permanente.

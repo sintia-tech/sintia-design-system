@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sintia_system_design/sintia_system_design.dart';
+import 'package:sintia_design_system/sintia_design_system.dart';
 
 /// Página de ejemplo: [SintiaDetailPageTemplate] con encabezado fijo.
 class ProfilePage extends StatelessWidget {
@@ -47,7 +47,7 @@ class ProfilePage extends StatelessWidget {
         const SintiaListSection(
           title: 'Proyectos',
           items: <SintiaListItem>[
-            SintiaListItem(title: 'Sintia System Design', tag: 'Activo'),
+            SintiaListItem(title: 'Sintia Design System', tag: 'Activo'),
             SintiaListItem(title: 'App de pedidos B2B', tag: 'Activo'),
           ],
         ),

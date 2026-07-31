@@ -6,7 +6,7 @@
 /// desde este paquete y no desde la app.
 abstract final class SintiaAssets {
   /// Nombre del paquete, requerido por `Lottie.asset` e `Image.asset`.
-  static const String package = 'sintia_system_design';
+  static const String package = 'sintia_design_system';
 
   /// Animación del indicador de carga (`SintiaLoader`).
   static const String loadingAnimation = 'assets/animations/loading.json';

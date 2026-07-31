@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sintia_system_design/sintia_system_design.dart';
+import 'package:sintia_design_system/sintia_design_system.dart';
 
 /// Sección del showcase: título, descripción opcional y las variantes del
 /// componente dispuestas en un [Wrap].

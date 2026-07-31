@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 Guía para trabajar en este repositorio. Es un **paquete de sistema de diseño
-Flutter** (no una app): `sintia_system_design`.
+Flutter** (no una app): `sintia_design_system`.
 
 ## Comandos
 
@@ -49,8 +49,8 @@ Reglas que se aplican en cada cambio:
 5. **Configuración como datos.** Listas de configuración (navegación, acciones,
    items) se declaran con modelos de `models/`, no con widgets sueltos.
 6. **Imports relativos dentro del paquete.** Nunca
-   `package:sintia_system_design/...` en `lib/src/`.
-7. **Un solo barrel**: `lib/sintia_system_design.dart`, con los exports en orden
+   `package:sintia_design_system/...` en `lib/src/`.
+7. **Un solo barrel**: `lib/sintia_design_system.dart`, con los exports en orden
    alfabético (lo exige `directives_ordering`).
 
 ## Convenciones de código
@@ -83,7 +83,7 @@ archivo en la capa correcta → export en el barrel → `@SintiaPreview` → tes
   registra sus fuentes y las pasa por `SintiaThemeConfig`. Los `.ttf` de
   `example/assets/fonts/` son solo demostración.
 - **El único asset del paquete** es `assets/animations/loading.json`, que usa
-  `SintiaLoader` con `package: 'sintia_system_design'`.
+  `SintiaLoader` con `package: 'sintia_design_system'`.
 - En tests, `pumpAndSettle` no se estabiliza si hay un `SintiaLoader` visible (la
   animación Lottie es infinita). Para abrir diálogos en pruebas, usar un botón de
   Material en vez de `SintiaButton` con `onPressed` asíncrono.

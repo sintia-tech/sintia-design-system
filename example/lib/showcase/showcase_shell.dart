@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sintia_system_design/sintia_system_design.dart';
+import 'package:sintia_design_system/sintia_design_system.dart';
 
 import '../catalog/catalog.dart';
 import '../catalog/component_category.dart';
@@ -62,7 +62,7 @@ class _ShowcaseShellState extends State<ShowcaseShell> {
       onRouteSelected: (String route) => setState(() => _route = route),
       logo: const _ShowcaseLogo(),
       mark: const _ShowcaseMark(),
-      title: category?.title ?? 'Sintia System Design',
+      title: category?.title ?? 'Sintia Design System',
       actions: <SintiaAppBarAction>[
         SintiaAppBarAction(
           icon: widget.isDark

@@ -2,14 +2,31 @@
 
 Reconstrucción completa del sistema de diseño sobre un pipeline de capas
 (`foundations → tokens → theme → componentes`), con `lib/src` privado y un único
-barrel público. **Rompe la API respecto a la 0.6.0**: cambian los nombres, las
-rutas de importación y el theming (ver **Migración**).
+barrel público. **Rompe la API respecto a la 0.6.0**: cambia el nombre del
+paquete, los nombres de las clases, las rutas de importación y el theming (ver
+**Migración**).
+
+### Renombrado del paquete
+
+El paquete pasó de `sintia_system_design` a **`sintia_design_system`**: en inglés
+"design system" es un sistema de diseño, mientras que "system design" significa
+arquitectura de sistemas. El nombre anterior queda descontinuado en pub.dev
+apuntando a este.
+
+```yaml
+dependencies:
+  sintia_design_system: ^1.0.0   # antes: sintia_system_design
+```
+
+```dart
+import 'package:sintia_design_system/sintia_design_system.dart';
+```
 
 ### Arquitectura
 
 * Estructura reorganizada en `lib/src/`, expuesta solo a través de
-  `sintia_system_design.dart`. Se eliminan los imports profundos
-  (`package:sintia_system_design/tokens/...`).
+  `sintia_design_system.dart`. Se eliminan los imports profundos
+  (`package:sintia_design_system/tokens/...`).
 * Capas explícitas:
   * **`foundations/`**: escala cruda `SintiaSizes` (grilla de 4px) y vocabulario
     sin valores (`SintiaSize`, `SintiaStatus`).
@@ -101,7 +118,7 @@ rutas de importación y el theming (ver **Migración**).
 
 | Antes | Ahora |
 |---|---|
-| `import '.../tokens/colors.dart'` | `import 'package:sintia_system_design/sintia_system_design.dart'` |
+| `import '.../tokens/colors.dart'` | `import 'package:sintia_design_system/sintia_design_system.dart'` |
 | `SintiaThemeConfig(primaryColor:, secondaryColor:, primaryFont:, secondaryFont:)` | `SintiaThemeConfig(primary:, secondary:, headingFontFamily:, fontFamily:)` |
 | `AppColors.statusDanger01` | `context.colorScheme.error` |
 | `AppColors.statusSuccess01` | `context.statusColors.success` |

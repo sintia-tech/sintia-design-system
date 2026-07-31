@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sintia_system_design/sintia_system_design.dart';
+import 'package:sintia_design_system/sintia_design_system.dart';
 
 /// Envoltorio de una página de componente: app bar con botón de volver y el
 /// contenido del componente.

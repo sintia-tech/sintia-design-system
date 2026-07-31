@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sintia_system_design/sintia_system_design.dart';
+import 'package:sintia_design_system/sintia_design_system.dart';
 
 import 'showcase/showcase_shell.dart';
 
@@ -36,7 +36,7 @@ class _ShowcaseAppState extends State<ShowcaseApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sintia System Design',
+      title: 'Sintia Design System',
       debugShowCheckedModeBanner: false,
       theme: SintiaTheme.light(_config),
       darkTheme: SintiaTheme.dark(_config),

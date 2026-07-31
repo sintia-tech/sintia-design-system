@@ -1,4 +1,4 @@
-# Showcase — Sintia System Design
+# Showcase — Sintia Design System
 
 App navegable con todos los tokens y componentes del sistema de diseño,
 construida con la propia `SintiaShellTemplate`.

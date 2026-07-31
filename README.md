@@ -1,4 +1,4 @@
-# Sintia System Design
+# Sintia Design System
 
 Sistema de diseño de **Sintia** para Flutter, organizado con **Atomic Design**.
 
@@ -21,7 +21,7 @@ La base es un pipeline de capas
 
 ```
 lib/
-├── sintia_system_design.dart   # único barrel público
+├── sintia_design_system.dart   # único barrel público
 └── src/
     ├── foundations/   # SintiaSizes (escala cruda), SintiaSize, SintiaStatus
     ├── tokens/        # SintiaSpacing, SintiaRadius, SintiaIconSize,
@@ -68,15 +68,18 @@ showcase incluye dos de ejemplo.
 
 ```yaml
 dependencies:
-  sintia_system_design:
-    git:
-      url: https://github.com/sintia-tech/sintia-system-design
-      ref: v1.0.0
+  sintia_design_system: ^1.0.0
 ```
 
 ```dart
-import 'package:sintia_system_design/sintia_system_design.dart';
+import 'package:sintia_design_system/sintia_design_system.dart';
 ```
+
+> Este paquete se llamaba `sintia_system_design` hasta la 0.6.0. El nombre
+> anterior está descontinuado en pub.dev: "design system" es el término correcto
+> para un sistema de diseño ("system design" es arquitectura de sistemas). Si
+> venís de una versión 0.x, cambiá el nombre de la dependencia y del import; el
+> resto de la migración está en el [CHANGELOG](CHANGELOG.md).
 
 ## Theming
 
@@ -304,7 +307,7 @@ cd example && flutter test
 5. **Mantenlo puro**: sin navegación ni estado global adentro; callbacks hacia
    afuera.
 6. **Agrega un `@SintiaPreview`** entre marcas `// coverage:ignore-start/end`.
-7. **Expórtalo** en `lib/sintia_system_design.dart` (orden alfabético).
+7. **Expórtalo** en `lib/sintia_design_system.dart` (orden alfabético).
 8. **Escribe el test** en `test/<capa>/` y **la página** de la showcase en
    `example/lib/pages/<capa>/`, con su entrada en `catalog.dart`.
 9. **Regístralo** en [PROJECT_INDEX.md](PROJECT_INDEX.md) y en el
@@ -314,6 +317,6 @@ cd example && flutter test
 
 - Sitio: [sintia.tech](https://sintia.tech)
 - Repositorio:
-  [github.com/sintia-tech/sintia-system-design](https://github.com/sintia-tech/sintia-system-design)
+  [github.com/sintia-tech/sintia-design-system](https://github.com/sintia-tech/sintia-design-system)
 - Issues:
-  [github.com/sintia-tech/sintia-system-design/issues](https://github.com/sintia-tech/sintia-system-design/issues)
+  [github.com/sintia-tech/sintia-design-system/issues](https://github.com/sintia-tech/sintia-design-system/issues)

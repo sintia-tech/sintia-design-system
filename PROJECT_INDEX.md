@@ -8,7 +8,7 @@
 > (`_Nombre`) ni específicos de una sola feature.
 
 Este proyecto **es** el sistema de diseño: todo lo que está en `lib/src/` se
-expone por el barrel `lib/sintia_system_design.dart` y está pensado para
+expone por el barrel `lib/sintia_design_system.dart` y está pensado para
 reutilizarse en cualquier app de Sintia.
 
 ---
