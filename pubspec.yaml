@@ -1,17 +1,18 @@
 name: sintia_system_design
-description: "Flutter design system package with configurable theming, and UI components."
-version: 0.6.0
+description: "Sistema de diseño de Sintia para Flutter, organizado con Atomic Design: tokens, theming configurable y componentes listos para producción."
+version: 1.0.0
 homepage: https://sintia.tech
 repository: https://github.com/sintia-tech/sintia-system-design
 issue_tracker: https://github.com/sintia-tech/sintia-system-design/issues
 
 environment:
-  sdk: ^3.11.4
-  flutter: ">=3.0.0"
+  sdk: ^3.12.0
+  flutter: ">=3.35.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  lottie: ^3.3.3
 
 dev_dependencies:
   flutter_test:
@@ -19,10 +20,5 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
 flutter:
-  fonts:
-    - family: Montserrat
-      fonts:
-        - asset: assets/fonts/Montserrat.ttf
-    - family: OpenSans
-      fonts:
-        - asset: assets/fonts/OpenSans.ttf
+  assets:
+    - assets/animations/

@@ -1,17 +1,16 @@
 #!/bin/bash
+set -e
+
 echo "🧪 Ejecutando pruebas con cobertura..."
 flutter test --coverage
 
 echo ""
-echo "🧹 Filtrando archivos generados..."
+echo "🧹 Filtrando archivos generados y previews..."
 lcov --remove coverage/lcov.info \
   '**/*.g.dart' \
   '**/*.freezed.dart' \
-  '**/*.gr.dart' \
-  '**/*.config.dart' \
   '**/generated/**' \
   '**/.dart_tool/**' \
-  '**/l10n/**' \
   -o coverage/lcov_filtered.info
 
 echo ""
@@ -21,4 +20,3 @@ genhtml coverage/lcov_filtered.info -o coverage/html
 echo ""
 echo "✅ Reporte generado en coverage/html/index.html"
 open coverage/html/index.html
-EOF

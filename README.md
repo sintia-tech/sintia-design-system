@@ -1,164 +1,319 @@
 # Sintia System Design
 
-A Flutter design system package with configurable theming, and UI components. Built to give consuming apps full control over colors and typography while keeping UI consistency.
+Sistema de diseño de **Sintia** para Flutter, organizado con **Atomic Design**.
 
-## Installation
+Tu app inyecta la identidad visual (marca, fuentes y colores de estado); el
+sistema aporta la consistencia (tokens, theming y componentes). Ningún
+componente hardcodea colores: todo sale del tema.
 
-Add the package to your `pubspec.yaml`:
+```dart
+MaterialApp(
+  theme: SintiaTheme.light(config),
+  darkTheme: SintiaTheme.dark(config),
+  home: const HomePage(),
+);
+```
+
+## Arquitectura
+
+La base es un pipeline de capas
+`foundations → tokens → theme → componentes`:
+
+```
+lib/
+├── sintia_system_design.dart   # único barrel público
+└── src/
+    ├── foundations/   # SintiaSizes (escala cruda), SintiaSize, SintiaStatus
+    ├── tokens/        # SintiaSpacing, SintiaRadius, SintiaIconSize,
+    │                  # SintiaBreakpoints, SintiaElevation, SintiaShadows,
+    │                  # SintiaDuration, SintiaNavDrawerMetrics
+    ├── theme/         # SintiaTheme, SintiaThemeConfig, SintiaStatusColors
+    │   └── extensions/# BuildContext (tema + responsive) y TextStyle
+    ├── models/        # SintiaNavItem, SintiaAppBarAction, SintiaListItem
+    ├── atoms/         # piezas indivisibles
+    ├── molecules/     # combinaciones de átomos
+    ├── organisms/     # secciones completas de interfaz
+    ├── templates/     # estructura de pantalla sin contenido
+    └── previews/      # SintiaPreview (Widget Previews con el tema aplicado)
+```
+
+Las **páginas** (último nivel de Atomic Design) son instancias de una plantilla
+con datos reales, por lo que viven en la app consumidora y no en el paquete. La
+showcase incluye dos de ejemplo.
+
+### Reglas del sistema
+
+- Las **foundations** son la base sin misión concreta: la escala cruda de
+  valores (`SintiaSizes`, grilla de 4px) y el vocabulario que nombra sin decidir
+  valores (`SintiaSize` para tamaños, `SintiaStatus` para estados). La escala
+  solo la consumen los tokens y las traducciones internas de los componentes.
+- Los **tokens** dan misión a los valores crudos (`SintiaSpacing.medium`,
+  `SintiaRadius.small`), sin semántica de componente: no existe, por ejemplo, un
+  `buttonColor`. Cuando una medida es propia de un componente y varias piezas
+  necesitan hablar de ella, se declara como **token de componente**
+  (`SintiaNavDrawerMetrics`).
+- Los **componentes** traducen internamente el vocabulario a su propia
+  proporción: el `SintiaSize.small` de un avatar no mide lo mismo que el de un
+  loader, y esa decisión vive en el componente, no en la base.
+- El **theme** mapea tokens + marca a un `ThemeData`, la única fuente de color y
+  tipografía. Como la marca se inyecta en runtime, la semántica de color no son
+  alias estáticos sino los roles de `ColorScheme` + `SintiaStatusColors`.
+- Los **componentes** nunca usan colores hardcodeados: todo llega del tema vía
+  `context.colorScheme`, `context.textTheme` y `context.statusColors`.
+- Los **organismos y plantillas son puros**: no navegan ni guardan estado de
+  ruta. Reciben datos y notifican por callbacks, así funcionan igual con
+  GoRouter, Navigator 1.0 o un `IndexedStack`.
+
+## Instalación
 
 ```yaml
 dependencies:
-  sintia_system_design: ^0.0.1
+  sintia_system_design:
+    git:
+      url: https://github.com/sintia-tech/sintia-system-design
+      ref: v1.0.0
 ```
-
-Then run:
-
-```bash
-flutter pub get
-```
-
-## Setup
-
-Configure the theme in your app's `main.dart` using `SintiaThemeConfig` and `SintiaTheme`:
 
 ```dart
 import 'package:sintia_system_design/sintia_system_design.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    const config = SintiaThemeConfig(
-      primaryColor: Colors.blue,
-      secondaryColor: Colors.indigo,
-      primaryFont: 'YourPrimaryFont',
-      secondaryFont: 'YourSecondaryFont',
-      tertiaryFont: 'YourTertiaryFont', // optional
-    );
-
-    return MaterialApp(
-      theme: SintiaTheme.light(config),
-      darkTheme: SintiaTheme.dark(config),
-      home: const MyHomePage(),
-    );
-  }
-}
 ```
 
-> Fonts must be registered in your app's `pubspec.yaml`. The package is font-source agnostic — use local assets or any font package like `google_fonts`.
+## Theming
 
-### Font roles
+La identidad visual se define **una sola vez** con `SintiaThemeConfig` y
+alimenta tanto el tema claro como el oscuro:
 
-| Text roles | Font used |
+```dart
+const SintiaThemeConfig config = SintiaThemeConfig(
+  primary: Color(0xFF4F46E5),        // semilla de todo el ColorScheme
+  secondary: Color(0xFF0D9488),      // opcional
+  fontFamily: 'OpenSans',            // opcional: body, title, label
+  headingFontFamily: 'Montserrat',   // opcional: display, headline, titleLarge
+);
+
+MaterialApp(
+  theme: SintiaTheme.light(config),
+  darkTheme: SintiaTheme.dark(config),
+  themeMode: ThemeMode.system,
+);
+```
+
+El paquete es **agnóstico a la fuente**: se registran en el `pubspec.yaml` de tu
+app, desde assets locales o con `google_fonts`. Si no defines ninguna, se usa la
+del sistema.
+
+| Roles de texto | Fuente |
 |---|---|
-| `display*`, `headline*` | `primaryFont` |
-| `title*`, `body*` | `secondaryFont` |
-| `label*` | `tertiaryFont` if provided, otherwise `secondaryFont` |
+| `display*`, `headline*`, `titleLarge` | `headingFontFamily` (o `fontFamily`) |
+| `title*`, `body*`, `label*` | `fontFamily` |
 
-## Components
+### Colores de estado
 
-### SintiaText
-
-A styled text widget that wraps Flutter's `Text`.
+`ColorScheme` de Material solo trae `error`. El sistema agrega `success`,
+`warning` e `info` como `ThemeExtension`, con defaults sobreescribibles:
 
 ```dart
-SintiaText(
-  'Hello World',
-  style: TextStyle(fontSize: 16),
-  maxLines: 2,
-  overflow: TextOverflow.ellipsis,
-)
+SintiaTheme.light(
+  config.copyWith(
+    lightStatusColors: const SintiaStatusColors(
+      success: Color(0xFF15803D),
+      warning: Color(0xFFB45309),
+      info: Color(0xFF1D4ED8),
+    ),
+  ),
+);
 ```
 
-### SintiaCard
+Se leen en cualquier parte con `context.statusColors.success`.
 
-A surface container with consistent border, shadow, and radius tokens applied.
+## Componentes
+
+### Átomos
+
+| Componente | Para qué |
+|---|---|
+| `SintiaText` | Texto que nunca queda sin estilo (hereda `bodyMedium`) |
+| `SintiaButton` | 5 variantes, 3 tamaños e indicador de carga automático |
+| `SintiaTextField` | Campo con etiqueta externa, ayuda, error y contraseña |
+| `SintiaChip` | Etiqueta, chip de estado o filtro seleccionable |
+| `SintiaIconAction` | Botón de ícono compacto con badge |
+| `SintiaLoader` | Indicador Lottie empaquetado en el paquete |
+| `SintiaAvatar` | Imagen o iniciales en tres tamaños |
+
+`SintiaButton` acepta callbacks sincrónicos y asíncronos. Si `onPressed`
+devuelve un `Future`, el botón se bloquea y muestra el loader hasta que termina,
+sin que tengas que manejar el estado:
 
 ```dart
-SintiaCard(
-  padding: EdgeInsets.all(SintiaSizes.size2),
-  child: Text('Card content'),
-)
+SintiaButton(
+  label: 'Guardar',
+  icon: Icons.check,
+  onPressed: () async => repository.save(form),
+);
 ```
 
-## Design Tokens
+### Moléculas
 
-### Colors — `AppColors`
+| Componente | Para qué |
+|---|---|
+| `SintiaCard` | Superficie con padding y tap opcional |
+| `SintiaBanner` | Mensaje contextual por `SintiaStatus` |
+| `SintiaEmptyState` | Lista vacía o estado de error con acción |
+| `SintiaListTile` | Fila con avatar/ícono, textos y etiqueta |
+| `SintiaConfirmDialog` | Confirmación con helper `show` que resuelve `bool?` |
+| `SintiaCheckOption` | Aceptación con enlace legal |
+| `SintiaOtpField` | Código con casillas y foco automático |
+| `SintiaSuccessView` | Cierre de flujo exitoso |
+| `SintiaAppBarTitle` | Título con prefijo/sufijo, táctil opcional |
+| `SintiaNavDrawerHeader`, `SintiaNavDrawerItem` | Piezas del drawer |
 
-Semantic color palette and gray scale:
+### Organismos
+
+| Componente | Para qué |
+|---|---|
+| `SintiaAppBar` | App bar con leading (`none`/`back`/`menu`) y acciones |
+| `SintiaNavigationDrawer` | Menú lateral colapsable (rail ↔ expandido) |
+| `SintiaDialog` | Diálogo compuesto por ranuras |
+| `SintiaListSection` | Sección con encabezado, acción y elementos |
+| `SintiaProfileHeader` | Cabecera de una entidad |
+
+### Plantillas
+
+| Plantilla | Para qué |
+|---|---|
+| `SintiaPageTemplate` | App bar + secciones + footer, con ancho máximo |
+| `SintiaDetailPageTemplate` | Igual, con encabezado fijo |
+| `SintiaShellTemplate` | Estructura maestra con drawer, responsiva |
+
+## Navegación lateral
+
+`SintiaShellTemplate` resuelve el patrón completo de una app con menú:
+
+- **Escritorio y tablet**: drawer permanente y colapsable a rail de 80px, con
+  tooltips en los íconos.
+- **Móvil**: el drawer se abre como modal desde el botón de menú de la app bar y
+  se cierra al elegir una ruta.
 
 ```dart
-AppColors.statusDanger01
-AppColors.statusSuccess01
-AppColors.statusWarning
-AppColors.statusDisabled
-AppColors.scale00 // white
-AppColors.scale06 // darkest gray
+const List<SintiaNavItem> items = <SintiaNavItem>[
+  SintiaNavItem(
+    label: 'Inicio',
+    icon: Icons.dashboard_outlined,
+    selectedIcon: Icons.dashboard,
+    route: '/',
+  ),
+  SintiaNavItem(
+    label: 'Pedidos',
+    icon: Icons.receipt_long_outlined,
+    route: '/orders',
+    badgeCount: 12,
+  ),
+  SintiaNavItem(
+    label: 'Reportes',
+    icon: Icons.insert_chart_outlined,
+    route: '/reports',
+    dividerAbove: true,
+  ),
+];
+
+SintiaShellTemplate(
+  logo: Image.asset('assets/logo.png', height: 32),    // drawer expandido
+  mark: Image.asset('assets/isotipo.png', height: 32), // drawer colapsado
+  items: items,
+  footerItems: <SintiaNavItem>[settingsItem, logoutItem],
+  currentRoute: state.uri.path,
+  onRouteSelected: context.go,
+  body: child,
+);
 ```
 
-### Sizes — `SintiaSizes`
+Si necesitas controlar el drawer por tu cuenta (por ejemplo, para persistir el
+estado colapsado), usa `SintiaNavigationDrawer` directamente con `collapsed` +
+`onToggleCollapsed`. Sus medidas están en `SintiaNavDrawerMetrics`, por si tu
+layout necesita animarse junto al menú.
 
-Spacing and border radius tokens based on a Fibonacci-like scale:
+## Extensiones
+
+### `BuildContext`
 
 ```dart
-SintiaSizes.size1  // 10
-SintiaSizes.size2  // 20
-SintiaSizes.size3  // 30
-// ...up to size9
+context.theme;          context.colorScheme;   context.textTheme;
+context.statusColors;   context.isDarkMode;    context.primaryColor;
+context.onPrimaryColor; context.errorColor;    context.surfaceColor;
 
-SintiaSizes.radius1  // 10
-SintiaSizes.radius2  // 20
+context.isMobile;       context.isTablet;      context.isDesktop;
+context.screenWidth;    context.screenHeight;
+
+final int columns = context.responsiveValue<int>(
+  mobile: 1,
+  tablet: 2,
+  desktop: 4,
+);
 ```
 
-### Shadows — `SintiaShadows`
-
-Three elevation levels:
+### `TextStyle`
 
 ```dart
-SintiaShadows.s1  // subtle
-SintiaShadows.s2  // medium
-SintiaShadows.s3  // strong
+context.textTheme.titleMedium!.semiBold.primary(context);
+context.textTheme.bodySmall!.muted(context);
+someStyle.withColor(context.statusColors.success);
+// pesos:   regular · medium · semiBold · bold
+// colores: primary · secondary · error · muted · withColor
 ```
 
-### Elevations — `SintiaElevations`
+## Widget Previews
+
+Cada componente trae previews anotados con `@SintiaPreview`, que aplican el tema
+del sistema. Se ven directamente en el IDE (Flutter Widget Previews) y la
+anotación también sirve en tu app:
 
 ```dart
-SintiaElevations.s1  // 2
-SintiaElevations.s2  // 4
-// ...up to s6
+@SintiaPreview(name: 'Formulario', group: 'Login')
+Widget loginFormPreview() => const LoginForm();
 ```
 
-## Extensions
+## Showcase
 
-### BuildContext
+App navegable con todos los tokens y componentes, construida con la propia
+`SintiaShellTemplate`:
 
-Quick access to theme properties:
-
-```dart
-context.theme
-context.colorScheme
-context.textTheme
-context.primaryColor
-context.errorColor
+```bash
+cd example && flutter run -d chrome
 ```
 
-### TextStyle
+## Desarrollo
 
-Compose styles fluently:
-
-```dart
-someStyle.primary(context)    // applies colorScheme.primary
-someStyle.secondary(context)  // applies colorScheme.secondary
-someStyle.withColor(AppColors.statusDanger01)
+```bash
+flutter analyze          # análisis estricto (ver analysis_options.yaml)
+flutter test             # suite del paquete
+./coverage.sh            # cobertura + reporte HTML
+cd example && flutter test
 ```
 
-## Links
+### Agregar un componente nuevo
 
-- Website: [sintia.tech](https://sintia.tech)
-- Repository: [github.com/sintia-tech/sintia-system-design](https://github.com/sintia-tech/sintia-system-design)
-- Issues: [github.com/sintia-tech/sintia-system-design/issues](https://github.com/sintia-tech/sintia-system-design/issues)
+1. **Ubica la capa** por composición, no por complejidad: ¿es indivisible
+   (átomo), combina átomos (molécula), es una sección completa (organismo) o
+   define estructura sin contenido (plantilla)?
+2. **Crea el archivo** en `lib/src/<capa>/sintia_<nombre>.dart`, con dartdoc que
+   explique **para qué sirve** y un ejemplo de uso.
+3. **Usa tokens y tema**: nada de números ni colores hardcodeados. Si necesitas
+   una medida nueva, agrégala a `SintiaSizes` y dale misión en un token.
+4. **Datos como modelos**: si el componente recibe una lista de configuración,
+   declara un modelo inmutable en `models/` en lugar de aceptar widgets sueltos.
+5. **Mantenlo puro**: sin navegación ni estado global adentro; callbacks hacia
+   afuera.
+6. **Agrega un `@SintiaPreview`** entre marcas `// coverage:ignore-start/end`.
+7. **Expórtalo** en `lib/sintia_system_design.dart` (orden alfabético).
+8. **Escribe el test** en `test/<capa>/` y **la página** de la showcase en
+   `example/lib/pages/<capa>/`, con su entrada en `catalog.dart`.
+9. **Regístralo** en [PROJECT_INDEX.md](PROJECT_INDEX.md) y en el
+   [CHANGELOG](CHANGELOG.md).
+
+## Enlaces
+
+- Sitio: [sintia.tech](https://sintia.tech)
+- Repositorio:
+  [github.com/sintia-tech/sintia-system-design](https://github.com/sintia-tech/sintia-system-design)
+- Issues:
+  [github.com/sintia-tech/sintia-system-design/issues](https://github.com/sintia-tech/sintia-system-design/issues)
