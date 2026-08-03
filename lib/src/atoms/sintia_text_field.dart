@@ -26,6 +26,7 @@ class SintiaTextField extends StatefulWidget {
   const SintiaTextField({
     super.key,
     this.label,
+    this.labelStyle,
     this.hint,
     this.helperText,
     this.errorText,
@@ -54,6 +55,11 @@ class SintiaTextField extends StatefulWidget {
 
   /// Etiqueta mostrada sobre el campo. Si es null no se reserva espacio.
   final String? label;
+
+  /// Estilo de la etiqueta solo para este campo. Si es null usa el del tema
+  /// (`inputDecorationTheme.labelStyle`), que se configura una sola vez con
+  /// `SintiaThemeConfig.inputLabelColor`.
+  final TextStyle? labelStyle;
   final String? hint;
 
   /// Texto de ayuda bajo el campo.
@@ -106,6 +112,12 @@ class _SintiaTextFieldState extends State<SintiaTextField> {
 
   void _toggleObscured() => setState(() => _obscured = !_obscured);
 
+  /// Estilo de la etiqueta: el del campo, el del tema o el del sistema.
+  TextStyle? _labelStyle(BuildContext context) =>
+      widget.labelStyle ??
+      context.theme.inputDecorationTheme.labelStyle ??
+      context.textTheme.labelLarge?.semiBold;
+
   @override
   Widget build(BuildContext context) {
     final String? label = widget.label;
@@ -156,8 +168,7 @@ class _SintiaTextFieldState extends State<SintiaTextField> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: SintiaSpacing.extraSmall,
         children: <Widget>[
-          if (label != null)
-            SintiaText(label, style: context.textTheme.labelLarge?.semiBold),
+          if (label != null) SintiaText(label, style: _labelStyle(context)),
           field,
         ],
       ),

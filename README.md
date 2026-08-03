@@ -138,7 +138,7 @@ Se leen en cualquier parte con `context.statusColors.success`.
 | `SintiaText` | Texto que nunca queda sin estilo (hereda `bodyMedium`) |
 | `SintiaButton` | 5 variantes, 3 tamaños e indicador de carga automático |
 | `SintiaTextField` | Campo con etiqueta externa, ayuda, error y contraseña |
-| `SintiaChip` | Etiqueta, chip de estado o filtro seleccionable |
+| `SintiaChip` | Etiqueta, chip de estado o filtro seleccionable (relleno de marca al seleccionar) |
 | `SintiaIconAction` | Botón de ícono compacto con badge |
 | `SintiaLoader` | Indicador Lottie empaquetado en el paquete |
 | `SintiaAvatar` | Imagen o iniciales en tres tamaños |
@@ -155,6 +155,19 @@ SintiaButton(
 );
 ```
 
+La etiqueta que `SintiaTextField` dibuja **sobre** el campo se configura una
+sola vez para toda la app con `inputLabelColor`, sin repetirla campo a campo:
+
+```dart
+const SintiaThemeConfig config = SintiaThemeConfig(
+  primary: Color(0xFFFDF663),
+  inputLabelColor: Color(0xFFFDF663),   // etiquetas en el color de marca
+);
+```
+
+Viaja al tema como `inputDecorationTheme.labelStyle`. Si un campo suelto
+necesita otra cosa, `SintiaTextField.labelStyle` tiene precedencia.
+
 ### Moléculas
 
 | Componente | Para qué |
@@ -165,10 +178,30 @@ SintiaButton(
 | `SintiaListTile` | Fila con avatar/ícono, textos y etiqueta |
 | `SintiaConfirmDialog` | Confirmación con helper `show` que resuelve `bool?` |
 | `SintiaCheckOption` | Aceptación con enlace legal |
+| `SintiaSegmentedControl<T>` | Selección única entre varias opciones |
 | `SintiaOtpField` | Código con casillas y foco automático |
 | `SintiaSuccessView` | Cierre de flujo exitoso |
 | `SintiaAppBarTitle` | Título con prefijo/sufijo, táctil opcional |
 | `SintiaNavDrawerHeader`, `SintiaNavDrawerItem` | Piezas del drawer |
+
+`SintiaSegmentedControl` es el componente para elegir **una** opción entre
+varias (idioma, periodo, modo de vista). Es genérico, así que el valor puede
+ser un `enum` o cualquier identificador, y declara sus opciones como datos:
+
+```dart
+SintiaSegmentedControl<String>(
+  value: locale,
+  size: SintiaSize.small,
+  segments: const <SintiaSegment<String>>[
+    SintiaSegment<String>(value: 'es', label: 'ES'),
+    SintiaSegment<String>(value: 'en', label: 'EN'),
+  ],
+  onChanged: (String value) => setState(() => locale = value),
+);
+```
+
+Para varias selecciones a la vez el componente es `SintiaChip` con
+`onSelected`; para un booleano suelto, el `Switch` de Material.
 
 ### Organismos
 

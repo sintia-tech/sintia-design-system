@@ -32,6 +32,7 @@ UI reutilizable entre features.
 | `SintiaListTile` | `lib/src/molecules/sintia_list_tile.dart` | Fila con avatar/ícono, textos y etiqueta o trailing |
 | `SintiaConfirmDialog` | `lib/src/molecules/sintia_confirm_dialog.dart` | Confirmación con helper `show` que resuelve `bool?` |
 | `SintiaCheckOption` | `lib/src/molecules/sintia_check_option.dart` | Aceptación con enlace legal |
+| `SintiaSegmentedControl<T>` | `lib/src/molecules/sintia_segmented_control.dart` | Selección única entre varias opciones (idioma, periodo, modo de vista) |
 | `SintiaOtpField` | `lib/src/molecules/sintia_otp_field.dart` | Código OTP con casillas y foco automático |
 | `SintiaSuccessView` | `lib/src/molecules/sintia_success_view.dart` | Cierre de flujo exitoso con acción principal |
 | `SintiaAppBarTitle` | `lib/src/molecules/sintia_app_bar_title.dart` | Título con prefijo/sufijo, táctil opcional |
@@ -122,3 +123,4 @@ Datos que las pantallas declaran para configurar componentes.
 | `SintiaNavItem` | `lib/src/models/sintia_nav_item.dart` | Ítem de navegación del drawer (label, íconos, ruta, badge, divisor) |
 | `SintiaAppBarAction` | `lib/src/models/sintia_app_bar_action.dart` | Acción de la app bar (ícono, callback, badge, tooltip) |
 | `SintiaListItem` | `lib/src/models/sintia_list_item.dart` | Elemento de `SintiaListSection` |
+| `SintiaSegment<T>` | `lib/src/models/sintia_segment.dart` | Opción de `SintiaSegmentedControl` (valor genérico, label, ícono, tooltip) |

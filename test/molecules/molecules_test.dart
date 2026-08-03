@@ -519,6 +519,135 @@ void main() {
       expect(selected?.route, '/reports');
     });
   });
+
+  group('SintiaSegmentedControl', () {
+    const List<SintiaSegment<String>> segments = <SintiaSegment<String>>[
+      SintiaSegment<String>(value: 'es', label: 'Español'),
+      SintiaSegment<String>(value: 'en', label: 'EN'),
+    ];
+
+    testWidgets('notifica el valor del segmento tocado', (
+      WidgetTester tester,
+    ) async {
+      String? changed;
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaSegmentedControl<String>(
+            segments: segments,
+            value: 'es',
+            onChanged: (String value) => changed = value,
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('EN'));
+      expect(changed, 'en');
+    });
+
+    testWidgets('no notifica al tocar el segmento activo', (
+      WidgetTester tester,
+    ) async {
+      String? changed;
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaSegmentedControl<String>(
+            segments: segments,
+            value: 'es',
+            onChanged: (String value) => changed = value,
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Español'));
+      expect(changed, isNull);
+    });
+
+    testWidgets('rellena el segmento activo con el color de marca', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaSegmentedControl<String>(
+            segments: segments,
+            value: 'es',
+            onChanged: (_) {},
+          ),
+        ),
+      );
+
+      final BuildContext context = tester.element(find.text('Español'));
+      BoxDecoration decorationOf(String label) {
+        return tester
+                .widget<Container>(
+                  find
+                      .ancestor(
+                        of: find.text(label),
+                        matching: find.byType(Container),
+                      )
+                      .first,
+                )
+                .decoration!
+            as BoxDecoration;
+      }
+
+      expect(decorationOf('Español').color, context.colorScheme.primary);
+      expect(decorationOf('EN').color, Colors.transparent);
+      expect(
+        tester.widget<Text>(find.text('Español')).style?.color,
+        context.colorScheme.onPrimary,
+      );
+    });
+
+    testWidgets('expanded reparte el ancho en segmentos iguales', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaSegmentedControl<String>(
+            segments: segments,
+            value: 'es',
+            expanded: true,
+            onChanged: (_) {},
+          ),
+        ),
+      );
+
+      final double first = tester.getSize(find.byType(InkWell).at(0)).width;
+      final double second = tester.getSize(find.byType(InkWell).at(1)).width;
+      expect(first, greaterThan(0));
+      expect(first, second);
+    });
+
+    testWidgets('un segmento sin texto muestra su tooltip', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaSegmentedControl<bool>(
+            value: false,
+            segments: const <SintiaSegment<bool>>[
+              SintiaSegment<bool>(
+                value: false,
+                icon: Icons.view_list_outlined,
+                tooltip: 'Lista',
+              ),
+              SintiaSegment<bool>(
+                value: true,
+                icon: Icons.grid_view_outlined,
+                tooltip: 'Cuadrícula',
+              ),
+            ],
+            size: SintiaSize.large,
+            onChanged: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.byType(Tooltip), findsNWidgets(2));
+      expect(find.byIcon(Icons.grid_view_outlined), findsOneWidget);
+      expect(find.byType(Text), findsNothing);
+    });
+  });
 }
 
 void _noop(SintiaNavItem item) {}

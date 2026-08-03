@@ -104,7 +104,11 @@ abstract final class SintiaTheme {
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(iconSize: SintiaIconSize.large),
       ),
-      inputDecorationTheme: _inputDecorationTheme(colorScheme),
+      inputDecorationTheme: _inputDecorationTheme(
+        colorScheme: colorScheme,
+        textTheme: textTheme,
+        labelColor: config.inputLabelColor,
+      ),
       cardTheme: CardThemeData(
         shape: const RoundedRectangleBorder(
           borderRadius: SintiaRadius.borderLarge,
@@ -236,9 +240,11 @@ abstract final class SintiaTheme {
     return scheme.copyWith(secondary: secondary);
   }
 
-  static InputDecorationThemeData _inputDecorationTheme(
-    ColorScheme colorScheme,
-  ) {
+  static InputDecorationThemeData _inputDecorationTheme({
+    required ColorScheme colorScheme,
+    required TextTheme textTheme,
+    required Color? labelColor,
+  }) {
     OutlineInputBorder border(Color color, {double width = 1}) {
       return OutlineInputBorder(
         borderRadius: SintiaRadius.borderMedium,
@@ -249,6 +255,10 @@ abstract final class SintiaTheme {
     return InputDecorationThemeData(
       filled: true,
       fillColor: colorScheme.surfaceContainerLow,
+      labelStyle: textTheme.labelLarge?.copyWith(
+        color: labelColor ?? colorScheme.onSurface,
+        fontWeight: FontWeight.w600,
+      ),
       contentPadding: const EdgeInsets.symmetric(
         horizontal: SintiaSpacing.medium,
         vertical: SintiaSpacing.medium,

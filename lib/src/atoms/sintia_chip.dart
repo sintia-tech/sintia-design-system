@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../foundations/sintia_status.dart';
 import '../previews/sintia_preview.dart';
+import '../theme/extensions/sintia_text_style_extension.dart';
 import '../theme/extensions/sintia_theme_context_extension.dart';
 import '../tokens/sintia_icon_size.dart';
 import '../tokens/sintia_spacing.dart';
@@ -11,6 +12,11 @@ import '../tokens/sintia_spacing.dart';
 /// Sirve para etiquetas estáticas, chips de estado y filtros
 /// seleccionables: si recibe [onSelected] se comporta como filtro con
 /// estado; si recibe [status] se pinta con el color semántico del sistema.
+///
+/// Cuando está [selected] se rellena con el color de marca (o con el del
+/// estado, si tiene uno) para que la selección se lea de un vistazo. Para
+/// elegir **una** opción entre varias el componente es
+/// `SintiaSegmentedControl`, no una fila de chips.
 ///
 /// ```dart
 /// SintiaChip(label: 'Activo', status: SintiaStatus.success);
@@ -61,20 +67,31 @@ class SintiaChip extends StatelessWidget {
             SintiaStatus.error => context.colorScheme.error,
           };
 
+    final ColorScheme colorScheme = context.colorScheme;
+
+    // Acento del chip: el color del estado o, si no tiene, el de marca.
+    final Color accent = statusColor ?? colorScheme.primary;
+
+    // Contenido: contrasta con el relleno cuando está activo, usa el acento
+    // cuando solo tiene estado y lo deja al tema cuando es neutral.
+    final Color? foreground = selected ? colorScheme.onPrimary : statusColor;
+
     return RawChip(
       label: Text(label),
       avatar: icon != null
-          ? Icon(icon, size: SintiaIconSize.small, color: statusColor)
+          ? Icon(icon, size: SintiaIconSize.small, color: foreground)
           : null,
       selected: selected,
       onSelected: onSelected,
       onDeleted: onDeleted,
       showCheckmark: false,
       backgroundColor: statusColor?.withValues(alpha: _statusBackgroundAlpha),
-      side: statusColor == null ? null : BorderSide(color: statusColor),
-      labelStyle: statusColor == null
+      selectedColor: accent,
+      deleteIconColor: foreground,
+      side: selected || statusColor != null ? BorderSide(color: accent) : null,
+      labelStyle: foreground == null
           ? null
-          : context.textTheme.labelLarge?.copyWith(color: statusColor),
+          : context.textTheme.labelLarge?.withColor(foreground),
     );
   }
 }
@@ -88,6 +105,15 @@ Widget sintiaChipStatusPreview() => const Wrap(
     SintiaChip(label: 'Activo', status: SintiaStatus.success),
     SintiaChip(label: 'Pendiente', status: SintiaStatus.warning),
     SintiaChip(label: 'Vencido', status: SintiaStatus.error),
+  ],
+);
+
+@SintiaPreview(name: 'Filtros', group: 'SintiaChip')
+Widget sintiaChipFilterPreview() => Wrap(
+  spacing: SintiaSpacing.small,
+  children: <Widget>[
+    SintiaChip(label: 'Flutter', selected: true, onSelected: (_) {}),
+    SintiaChip(label: 'Dart', onSelected: (_) {}),
   ],
 );
 // coverage:ignore-end

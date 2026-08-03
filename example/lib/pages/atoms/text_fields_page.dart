@@ -40,6 +40,24 @@ class _TextFieldsPageState extends State<TextFieldsPage> {
             ),
           ],
         ),
+        ShowcaseSection(
+          title: 'Etiqueta con color de marca',
+          description:
+              'labelStyle pinta la etiqueta de un campo. Para todos los '
+              'campos de la app, SintiaThemeConfig.inputLabelColor.',
+          stacked: true,
+          children: <Widget>[
+            SintiaTextField(
+              label: 'Correo',
+              hint: 'tu@correo.com',
+              labelStyle: context.textTheme.labelLarge?.semiBold
+                  .primary(
+                    context,
+                  )
+                  .withColor(context.statusColors.success),
+            ),
+          ],
+        ),
         const ShowcaseSection(
           title: 'Con ayuda y error',
           stacked: true,

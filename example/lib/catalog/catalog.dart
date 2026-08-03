@@ -16,6 +16,7 @@ import '../pages/molecules/confirm_dialogs_page.dart';
 import '../pages/molecules/empty_states_page.dart';
 import '../pages/molecules/list_tiles_page.dart';
 import '../pages/molecules/otp_fields_page.dart';
+import '../pages/molecules/segmented_controls_page.dart';
 import '../pages/molecules/success_views_page.dart';
 import '../pages/organisms/app_bars_page.dart';
 import '../pages/organisms/dialogs_page.dart';
@@ -131,6 +132,11 @@ final List<ComponentCategory> catalog = <ComponentCategory>[
         title: 'Opción de aceptación',
         description: 'Checkbox con enlace legal.',
         builder: (_) => const CheckOptionsPage(),
+      ),
+      ComponentEntry(
+        title: 'Selector de opciones',
+        description: 'Selección única: idioma, periodo o modo de vista.',
+        builder: (_) => const SegmentedControlsPage(),
       ),
       ComponentEntry(
         title: 'Código OTP',

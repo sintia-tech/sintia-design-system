@@ -69,6 +69,25 @@ void main() {
       expect(theme.dialogTheme.elevation, SintiaElevation.highest);
       expect(theme.inputDecorationTheme.filled, isTrue);
     });
+
+    test('la etiqueta de los campos usa el contenido de la superficie', () {
+      final ThemeData theme = SintiaTheme.light(config);
+      expect(
+        theme.inputDecorationTheme.labelStyle?.color,
+        theme.colorScheme.onSurface,
+      );
+      expect(
+        theme.inputDecorationTheme.labelStyle?.fontWeight,
+        FontWeight.w600,
+      );
+    });
+
+    test('inputLabelColor pinta la etiqueta de todos los campos', () {
+      final ThemeData theme = SintiaTheme.dark(
+        config.copyWith(inputLabelColor: Colors.amber),
+      );
+      expect(theme.inputDecorationTheme.labelStyle?.color, Colors.amber);
+    });
   });
 
   group('SintiaStatusColors', () {

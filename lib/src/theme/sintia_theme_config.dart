@@ -28,6 +28,7 @@ class SintiaThemeConfig {
     this.secondary,
     this.fontFamily,
     this.headingFontFamily,
+    this.inputLabelColor,
     this.lightStatusColors = SintiaStatusColors.light,
     this.darkStatusColors = SintiaStatusColors.dark,
   });
@@ -49,6 +50,14 @@ class SintiaThemeConfig {
   /// usa [fontFamily] en todos los estilos.
   final String? headingFontFamily;
 
+  /// Color de la etiqueta que va **sobre** los campos de texto. Si es null
+  /// usa el color de contenido de la superficie.
+  ///
+  /// Es el punto único para que todos los `SintiaTextField` de la app
+  /// resalten su etiqueta con el color de marca, sin repetirlo campo a
+  /// campo: viaja al tema como `inputDecorationTheme.labelStyle`.
+  final Color? inputLabelColor;
+
   /// Colores de estado del tema claro.
   final SintiaStatusColors lightStatusColors;
 
@@ -60,6 +69,7 @@ class SintiaThemeConfig {
     Color? secondary,
     String? fontFamily,
     String? headingFontFamily,
+    Color? inputLabelColor,
     SintiaStatusColors? lightStatusColors,
     SintiaStatusColors? darkStatusColors,
   }) {
@@ -68,6 +78,7 @@ class SintiaThemeConfig {
       secondary: secondary ?? this.secondary,
       fontFamily: fontFamily ?? this.fontFamily,
       headingFontFamily: headingFontFamily ?? this.headingFontFamily,
+      inputLabelColor: inputLabelColor ?? this.inputLabelColor,
       lightStatusColors: lightStatusColors ?? this.lightStatusColors,
       darkStatusColors: darkStatusColors ?? this.darkStatusColors,
     );
@@ -81,6 +92,7 @@ class SintiaThemeConfig {
         other.secondary == secondary &&
         other.fontFamily == fontFamily &&
         other.headingFontFamily == headingFontFamily &&
+        other.inputLabelColor == inputLabelColor &&
         other.lightStatusColors == lightStatusColors &&
         other.darkStatusColors == darkStatusColors;
   }
@@ -91,6 +103,7 @@ class SintiaThemeConfig {
     secondary,
     fontFamily,
     headingFontFamily,
+    inputLabelColor,
     lightStatusColors,
     darkStatusColors,
   );

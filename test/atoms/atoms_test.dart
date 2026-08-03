@@ -299,6 +299,47 @@ void main() {
       expect(tapped, isTrue);
       expect(changed, 'Sintia');
     });
+
+    testWidgets('pinta la etiqueta con el color del tema', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: SintiaTheme.light(
+            testConfig.copyWith(inputLabelColor: Colors.amber),
+          ),
+          home: const Scaffold(body: SintiaTextField(label: 'Correo')),
+        ),
+      );
+
+      expect(
+        tester.widget<Text>(find.text('Correo')).style?.color,
+        Colors.amber,
+      );
+    });
+
+    testWidgets('labelStyle del campo gana sobre el del tema', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: SintiaTheme.light(
+            testConfig.copyWith(inputLabelColor: Colors.amber),
+          ),
+          home: const Scaffold(
+            body: SintiaTextField(
+              label: 'Correo',
+              labelStyle: TextStyle(color: Colors.teal),
+            ),
+          ),
+        ),
+      );
+
+      expect(
+        tester.widget<Text>(find.text('Correo')).style?.color,
+        Colors.teal,
+      );
+    });
   });
 
   group('SintiaChip', () {
@@ -351,6 +392,21 @@ void main() {
 
       await tester.tap(find.byIcon(Icons.cancel));
       expect(deleted, isTrue);
+    });
+
+    testWidgets('seleccionado se rellena con el color de marca', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaChip(label: 'Flutter', selected: true, onSelected: (_) {}),
+        ),
+      );
+
+      final RawChip chip = tester.widget<RawChip>(find.byType(RawChip));
+      final BuildContext context = tester.element(find.byType(RawChip));
+      expect(chip.selectedColor, context.colorScheme.primary);
+      expect(chip.labelStyle?.color, context.colorScheme.onPrimary);
     });
   });
 

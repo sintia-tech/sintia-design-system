@@ -1,3 +1,34 @@
+## 1.1.0
+
+Selección única como componente propio y control del color de la etiqueta de
+los campos desde el tema. Compatible con la 1.0.0: no cambia ninguna API
+existente.
+
+### Agregado
+
+* `SintiaSegmentedControl<T>`: selector de una sola opción entre varias
+  (idioma, periodo, modo de vista). Genérico, con tres tamaños, modo
+  `expanded` y segmentos de solo ícono con tooltip. El segmento activo se
+  rellena con el color de marca y el resto queda plano, así que funciona
+  sobre cualquier fondo.
+* `SintiaSegment<T>`: modelo de cada opción (valor genérico, `label`, `icon`
+  y `tooltip`). Necesita al menos `label` o `icon`.
+* `SintiaThemeConfig.inputLabelColor`: pinta la etiqueta que va **sobre**
+  todos los `SintiaTextField` de la app en un solo lugar. Viaja al tema como
+  `inputDecorationTheme.labelStyle`.
+* `SintiaTextField.labelStyle`: estilo de la etiqueta para un campo puntual,
+  con precedencia sobre el del tema.
+
+### Cambiado
+
+* `SintiaChip` seleccionado se rellena con el color de marca (o con el del
+  estado, si tiene uno) y su contenido pasa a `onPrimary`, en vez de usar el
+  gris por defecto de Material.
+* La etiqueta de `SintiaTextField` sale del tema
+  (`inputDecorationTheme.labelStyle`) en lugar de fijarse en el componente.
+  Sin configuración se ve igual que en la 1.0.0: `labelLarge` semi-negrita
+  sobre `onSurface`.
+
 ## 1.0.0
 
 Reconstrucción completa del sistema de diseño sobre un pipeline de capas
