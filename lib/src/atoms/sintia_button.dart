@@ -45,6 +45,20 @@ enum SintiaButtonVariant {
 ///
 /// Para controlar el estado de carga desde fuera (por ejemplo, desde un
 /// gestor de estado), usar [loading].
+///
+/// [backgroundColor], [foregroundColor] y [borderRadius] son overrides
+/// puntuales para un botón que necesita salirse de su [variant] o del
+/// tema; para toda la app, la vía es `SintiaTheme` / `*ButtonThemeData`.
+///
+/// ```dart
+/// SintiaButton(
+///   label: 'Continuar',
+///   backgroundColor: Colors.amber,
+///   foregroundColor: Colors.black,
+///   borderRadius: BorderRadius.circular(999),
+///   onPressed: () {},
+/// );
+/// ```
 class SintiaButton extends StatefulWidget {
   const SintiaButton({
     required this.label,
@@ -56,6 +70,9 @@ class SintiaButton extends StatefulWidget {
     this.trailingIcon,
     this.loading = false,
     this.loadingLabel,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.borderRadius,
     this.expanded = false,
     this.semanticIdentifier,
   });
@@ -83,6 +100,18 @@ class SintiaButton extends StatefulWidget {
   /// Etiqueta mostrada junto al loader mientras carga. Si es null solo se
   /// muestra el loader.
   final String? loadingLabel;
+
+  /// Color de fondo para este botón puntual. Si es null, usa el de
+  /// [variant] o, en su defecto, el del tema.
+  final Color? backgroundColor;
+
+  /// Color del texto y los íconos para este botón puntual. Si es null,
+  /// usa el de [variant] o, en su defecto, el del tema.
+  final Color? foregroundColor;
+
+  /// Radio de borde para este botón puntual. Si es null, usa
+  /// `SintiaRadius.borderMedium` del tema.
+  final BorderRadius? borderRadius;
 
   /// Ocupa todo el ancho disponible.
   final bool expanded;
@@ -164,35 +193,61 @@ class _SintiaButtonState extends State<SintiaButton> {
             iconSize: _iconSize,
           );
 
+    final ButtonStyle variantStyle = switch (widget.variant) {
+      SintiaButtonVariant.danger => sizeStyle.merge(
+        FilledButton.styleFrom(
+          backgroundColor: context.colorScheme.error,
+          foregroundColor: context.colorScheme.onError,
+        ),
+      ),
+      SintiaButtonVariant.primary ||
+      SintiaButtonVariant.secondary ||
+      SintiaButtonVariant.outline ||
+      SintiaButtonVariant.ghost => sizeStyle,
+    };
+
+    // Los overrides puntuales ganan sobre la variante y el tema: un
+    // ButtonStyle solo rellena sus campos null con los de la variante.
+    final BorderRadius? borderRadius = widget.borderRadius;
+    final ButtonStyle overrideStyle = ButtonStyle(
+      backgroundColor: widget.backgroundColor == null
+          ? null
+          : WidgetStatePropertyAll<Color>(widget.backgroundColor!),
+      foregroundColor: widget.foregroundColor == null
+          ? null
+          : WidgetStatePropertyAll<Color>(widget.foregroundColor!),
+      shape: borderRadius == null
+          ? null
+          : WidgetStatePropertyAll<OutlinedBorder>(
+              RoundedRectangleBorder(borderRadius: borderRadius),
+            ),
+    );
+    final ButtonStyle style = overrideStyle.merge(variantStyle);
+
     final ButtonStyleButton button = switch (widget.variant) {
       SintiaButtonVariant.primary => FilledButton(
         onPressed: effectiveOnPressed,
-        style: sizeStyle,
+        style: style,
         child: child,
       ),
       SintiaButtonVariant.secondary => FilledButton.tonal(
         onPressed: effectiveOnPressed,
-        style: sizeStyle,
+        style: style,
         child: child,
       ),
       SintiaButtonVariant.outline => OutlinedButton(
         onPressed: effectiveOnPressed,
-        style: sizeStyle,
+        style: style,
         child: child,
       ),
       SintiaButtonVariant.ghost => TextButton(
         onPressed: effectiveOnPressed,
-        style: sizeStyle,
+        style: style,
         child: child,
       ),
       SintiaButtonVariant.danger => FilledButton(
         onPressed: effectiveOnPressed,
-        style: sizeStyle.merge(
-          FilledButton.styleFrom(
-            backgroundColor: context.colorScheme.error,
-            foregroundColor: context.colorScheme.onError,
-          ),
-        ),
+        style: style,
         child: child,
       ),
     };
@@ -303,6 +358,26 @@ Widget sintiaButtonSizesPreview() => Column(
     SintiaButton(label: 'Large', size: SintiaSize.large, onPressed: () {}),
     const SintiaButton(label: 'Deshabilitado'),
     const SintiaButton(label: 'Cargando', loading: true),
+  ],
+);
+
+@SintiaPreview(name: 'Personalizado', group: 'SintiaButton')
+Widget sintiaButtonCustomPreview() => Column(
+  mainAxisSize: MainAxisSize.min,
+  spacing: SintiaSpacing.small,
+  children: <Widget>[
+    SintiaButton(
+      label: 'Amarillo',
+      backgroundColor: Colors.amber,
+      foregroundColor: Colors.black,
+      onPressed: () {},
+    ),
+    SintiaButton(
+      label: 'Sin radio',
+      variant: SintiaButtonVariant.outline,
+      borderRadius: BorderRadius.zero,
+      onPressed: () {},
+    ),
   ],
 );
 // coverage:ignore-end

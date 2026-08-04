@@ -107,6 +107,26 @@ class ButtonsPage extends StatelessWidget {
             ),
           ],
         ),
+        ShowcaseSection(
+          title: 'Color y radio personalizados',
+          description:
+              'backgroundColor, foregroundColor y borderRadius pintan un '
+              'botón puntual por fuera de su variante o del tema.',
+          children: <Widget>[
+            SintiaButton(
+              label: 'Amarillo',
+              backgroundColor: Colors.amber,
+              foregroundColor: Colors.black,
+              onPressed: () {},
+            ),
+            SintiaButton(
+              label: 'Sin radio',
+              variant: SintiaButtonVariant.outline,
+              borderRadius: BorderRadius.zero,
+              onPressed: () {},
+            ),
+          ],
+        ),
       ],
     );
   }

@@ -1,3 +1,17 @@
+## 1.2.0
+
+Overrides puntuales de color y radio para `SintiaButton` y `SintiaChip`.
+Compatible con la 1.1.0: no cambia ninguna API existente.
+
+### Agregado
+
+* `SintiaButton.backgroundColor`, `.foregroundColor` y `.borderRadius`: pintan
+  o redondean un botón puntual por fuera de su `variant` o del tema. Tienen
+  precedencia sobre la variante (incluida `danger`) y sobre el tema.
+* `SintiaChip.backgroundColor`, `.foregroundColor` y `.borderRadius`: la misma
+  idea para un chip puntual, con precedencia sobre el color de `status` y el
+  de marca, tanto seleccionado como no.
+
 ## 1.1.0
 
 Selección única como componente propio y control del color de la etiqueta de

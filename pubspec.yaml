@@ -1,6 +1,6 @@
 name: sintia_design_system
 description: "Sistema de diseño de Sintia para Flutter, organizado con Atomic Design: tokens, theming configurable y componentes listos para producción."
-version: 1.1.0
+version: 1.2.0
 homepage: https://www.sintia.tech
 repository: https://github.com/sintia-tech/sintia-design-system
 issue_tracker: https://github.com/sintia-tech/sintia-design-system/issues

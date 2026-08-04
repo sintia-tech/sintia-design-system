@@ -66,6 +66,24 @@ class _ChipsPageState extends State<ChipsPage> {
               ),
           ],
         ),
+        const ShowcaseSection(
+          title: 'Color y radio personalizados',
+          description:
+              'backgroundColor, foregroundColor y borderRadius pintan un '
+              'chip puntual por fuera del estado o de la marca.',
+          children: <Widget>[
+            SintiaChip(
+              label: 'FR',
+              selected: true,
+              backgroundColor: Colors.amber,
+              foregroundColor: Colors.black,
+            ),
+            SintiaChip(
+              label: 'Cuadrada',
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+          ],
+        ),
       ],
     );
   }

@@ -155,6 +155,22 @@ SintiaButton(
 );
 ```
 
+`SintiaButton` y `SintiaChip` aceptan `backgroundColor`, `foregroundColor` y
+`borderRadius` para un caso puntual que necesita salirse de la variante o del
+tema (un acento propio del diseño, por ejemplo). Para toda la app, la vía
+sigue siendo `SintiaTheme` / `*ButtonThemeData` / `ChipThemeData`:
+
+```dart
+SintiaButton(
+  label: 'FR',
+  backgroundColor: Colors.amber,
+  foregroundColor: Colors.black,
+  onPressed: () {},
+);
+
+SintiaChip(label: 'FR', selected: true, backgroundColor: Colors.amber);
+```
+
 La etiqueta que `SintiaTextField` dibuja **sobre** el campo se configura una
 sola vez para toda la app con `inputLabelColor`, sin repetirla campo a campo:
 

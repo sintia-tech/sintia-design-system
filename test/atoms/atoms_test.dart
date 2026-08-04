@@ -221,6 +221,54 @@ void main() {
           .height;
       expect(small, lessThan(large));
     });
+
+    testWidgets('backgroundColor, foregroundColor y borderRadius override', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaButton(
+            label: 'Continuar',
+            backgroundColor: Colors.amber,
+            foregroundColor: Colors.black,
+            borderRadius: BorderRadius.zero,
+            onPressed: () {},
+          ),
+        ),
+      );
+
+      final FilledButton button = tester.widget<FilledButton>(
+        find.byType(FilledButton),
+      );
+      final Set<WidgetState> states = <WidgetState>{};
+      expect(button.style?.backgroundColor?.resolve(states), Colors.amber);
+      expect(button.style?.foregroundColor?.resolve(states), Colors.black);
+      expect(
+        button.style?.shape?.resolve(states),
+        const RoundedRectangleBorder(),
+      );
+    });
+
+    testWidgets('el override de color gana sobre la variante danger', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaButton(
+            label: 'Eliminar',
+            variant: SintiaButtonVariant.danger,
+            backgroundColor: Colors.amber,
+            onPressed: () {},
+          ),
+        ),
+      );
+
+      final FilledButton button = tester.widget<FilledButton>(
+        find.byType(FilledButton),
+      );
+      final Set<WidgetState> states = <WidgetState>{};
+      expect(button.style?.backgroundColor?.resolve(states), Colors.amber);
+    });
   });
 
   group('SintiaTextField', () {
@@ -407,6 +455,40 @@ void main() {
       final BuildContext context = tester.element(find.byType(RawChip));
       expect(chip.selectedColor, context.colorScheme.primary);
       expect(chip.labelStyle?.color, context.colorScheme.onPrimary);
+    });
+
+    testWidgets('backgroundColor y foregroundColor override', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          const SintiaChip(
+            label: 'FR',
+            selected: true,
+            backgroundColor: Colors.amber,
+            foregroundColor: Colors.black,
+          ),
+        ),
+      );
+
+      final RawChip chip = tester.widget<RawChip>(find.byType(RawChip));
+      expect(chip.selectedColor, Colors.amber);
+      expect(chip.labelStyle?.color, Colors.black);
+      expect(chip.side?.color, Colors.amber);
+    });
+
+    testWidgets('borderRadius override cambia la forma', (
+      WidgetTester tester,
+    ) async {
+      const BorderRadius radius = BorderRadius.all(Radius.circular(4));
+      await tester.pumpWidget(
+        wrapSintia(
+          const SintiaChip(label: 'Cuadrada', borderRadius: radius),
+        ),
+      );
+
+      final RawChip chip = tester.widget<RawChip>(find.byType(RawChip));
+      expect(chip.shape, const RoundedRectangleBorder(borderRadius: radius));
     });
   });
 

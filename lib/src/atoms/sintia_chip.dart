@@ -18,6 +18,11 @@ import '../tokens/sintia_spacing.dart';
 /// elegir **una** opción entre varias el componente es
 /// `SintiaSegmentedControl`, no una fila de chips.
 ///
+/// [backgroundColor], [foregroundColor] y [borderRadius] son overrides
+/// puntuales para un chip que necesita salirse del tema (por ejemplo, un
+/// diseño con acento propio); para toda la app, la vía es
+/// `SintiaTheme` / `ChipThemeData`.
+///
 /// ```dart
 /// SintiaChip(label: 'Activo', status: SintiaStatus.success);
 ///
@@ -26,6 +31,13 @@ import '../tokens/sintia_spacing.dart';
 ///   icon: Icons.flutter_dash,
 ///   selected: isSelected,
 ///   onSelected: (bool value) => setState(() => isSelected = value),
+/// );
+///
+/// SintiaChip(
+///   label: 'FR',
+///   selected: true,
+///   backgroundColor: Colors.amber,
+///   foregroundColor: Colors.black,
 /// );
 /// ```
 class SintiaChip extends StatelessWidget {
@@ -37,6 +49,9 @@ class SintiaChip extends StatelessWidget {
     this.selected = false,
     this.onSelected,
     this.onDeleted,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.borderRadius,
   });
 
   final String label;
@@ -51,6 +66,18 @@ class SintiaChip extends StatelessWidget {
 
   /// Muestra el ícono de borrar y lo invoca al tocarlo.
   final VoidCallback? onDeleted;
+
+  /// Color de fondo para este chip puntual. Tiene precedencia sobre el
+  /// color de [status] y el de marca, tanto seleccionado como no.
+  final Color? backgroundColor;
+
+  /// Color del texto y el ícono para este chip puntual. Tiene precedencia
+  /// sobre el que resulta de [status] y [selected].
+  final Color? foregroundColor;
+
+  /// Radio de borde para este chip puntual. Si es null, usa
+  /// `SintiaRadius.borderFull` del tema.
+  final BorderRadius? borderRadius;
 
   /// Opacidad del color de estado usada como fondo del chip.
   static const double _statusBackgroundAlpha = 0.12;
@@ -69,12 +96,16 @@ class SintiaChip extends StatelessWidget {
 
     final ColorScheme colorScheme = context.colorScheme;
 
-    // Acento del chip: el color del estado o, si no tiene, el de marca.
-    final Color accent = statusColor ?? colorScheme.primary;
+    // Acento del chip: el override puntual, el color del estado o, si no
+    // tiene, el de marca.
+    final Color accent = backgroundColor ?? statusColor ?? colorScheme.primary;
 
     // Contenido: contrasta con el relleno cuando está activo, usa el acento
     // cuando solo tiene estado y lo deja al tema cuando es neutral.
-    final Color? foreground = selected ? colorScheme.onPrimary : statusColor;
+    final Color? foreground =
+        foregroundColor ?? (selected ? colorScheme.onPrimary : statusColor);
+
+    final BorderRadius? borderRadius = this.borderRadius;
 
     return RawChip(
       label: Text(label),
@@ -85,10 +116,17 @@ class SintiaChip extends StatelessWidget {
       onSelected: onSelected,
       onDeleted: onDeleted,
       showCheckmark: false,
-      backgroundColor: statusColor?.withValues(alpha: _statusBackgroundAlpha),
+      backgroundColor:
+          backgroundColor ??
+          statusColor?.withValues(alpha: _statusBackgroundAlpha),
       selectedColor: accent,
       deleteIconColor: foreground,
-      side: selected || statusColor != null ? BorderSide(color: accent) : null,
+      shape: borderRadius == null
+          ? null
+          : RoundedRectangleBorder(borderRadius: borderRadius),
+      side: selected || statusColor != null || backgroundColor != null
+          ? BorderSide(color: accent)
+          : null,
       labelStyle: foreground == null
           ? null
           : context.textTheme.labelLarge?.withColor(foreground),
@@ -114,6 +152,23 @@ Widget sintiaChipFilterPreview() => Wrap(
   children: <Widget>[
     SintiaChip(label: 'Flutter', selected: true, onSelected: (_) {}),
     SintiaChip(label: 'Dart', onSelected: (_) {}),
+  ],
+);
+
+@SintiaPreview(name: 'Personalizado', group: 'SintiaChip')
+Widget sintiaChipCustomPreview() => const Wrap(
+  spacing: SintiaSpacing.small,
+  children: <Widget>[
+    SintiaChip(
+      label: 'FR',
+      selected: true,
+      backgroundColor: Colors.amber,
+      foregroundColor: Colors.black,
+    ),
+    SintiaChip(
+      label: 'Cuadrada',
+      borderRadius: BorderRadius.all(Radius.circular(4)),
+    ),
   ],
 );
 // coverage:ignore-end
