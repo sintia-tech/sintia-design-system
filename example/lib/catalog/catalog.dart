@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../pages/atoms/avatars_page.dart';
 import '../pages/atoms/buttons_page.dart';
 import '../pages/atoms/chips_page.dart';
+import '../pages/atoms/dropdowns_page.dart';
 import '../pages/atoms/icon_actions_page.dart';
 import '../pages/atoms/loaders_page.dart';
 import '../pages/atoms/text_fields_page.dart';
@@ -80,6 +81,11 @@ final List<ComponentCategory> catalog = <ComponentCategory>[
         title: 'Chips',
         description: 'Etiquetas, estados y filtros.',
         builder: (_) => const ChipsPage(),
+      ),
+      ComponentEntry(
+        title: 'Desplegables',
+        description: 'Selector de opciones con la decoración de un campo.',
+        builder: (_) => const DropdownsPage(),
       ),
       ComponentEntry(
         title: 'Acciones de ícono',

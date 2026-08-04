@@ -46,15 +46,18 @@ enum SintiaButtonVariant {
 /// Para controlar el estado de carga desde fuera (por ejemplo, desde un
 /// gestor de estado), usar [loading].
 ///
-/// [backgroundColor], [foregroundColor] y [borderRadius] son overrides
-/// puntuales para un botón que necesita salirse de su [variant] o del
-/// tema; para toda la app, la vía es `SintiaTheme` / `*ButtonThemeData`.
+/// [backgroundColor], [foregroundColor], [labelStyle] y [borderRadius] son
+/// overrides puntuales para un botón que necesita salirse de su [variant] o
+/// del tema; para toda la app, la vía es `SintiaTheme` / `*ButtonThemeData`.
+/// [labelStyle] cambia tipografía (peso, tamaño, familia); el color del
+/// texto y los íconos lo sigue resolviendo [foregroundColor].
 ///
 /// ```dart
 /// SintiaButton(
 ///   label: 'Continuar',
 ///   backgroundColor: Colors.amber,
 ///   foregroundColor: Colors.black,
+///   labelStyle: const TextStyle(fontWeight: FontWeight.bold),
 ///   borderRadius: BorderRadius.circular(999),
 ///   onPressed: () {},
 /// );
@@ -72,6 +75,7 @@ class SintiaButton extends StatefulWidget {
     this.loadingLabel,
     this.backgroundColor,
     this.foregroundColor,
+    this.labelStyle,
     this.borderRadius,
     this.expanded = false,
     this.semanticIdentifier,
@@ -108,6 +112,11 @@ class SintiaButton extends StatefulWidget {
   /// Color del texto y los íconos para este botón puntual. Si es null,
   /// usa el de [variant] o, en su defecto, el del tema.
   final Color? foregroundColor;
+
+  /// Estilo del texto de la etiqueta (peso, tamaño, familia). El color
+  /// sigue saliendo de [foregroundColor]. Si es null, usa el estilo base
+  /// de [size].
+  final TextStyle? labelStyle;
 
   /// Radio de borde para este botón puntual. Si es null, usa
   /// `SintiaRadius.borderMedium` del tema.
@@ -181,7 +190,9 @@ class _SintiaButtonState extends State<SintiaButton> {
       padding: WidgetStatePropertyAll<EdgeInsetsGeometry>(
         EdgeInsets.symmetric(horizontal: _horizontalPadding),
       ),
-      textStyle: WidgetStatePropertyAll<TextStyle?>(_textStyle(context)),
+      textStyle: WidgetStatePropertyAll<TextStyle?>(
+        widget.labelStyle ?? _textStyle(context),
+      ),
     );
 
     final Widget child = _isLoading
@@ -376,6 +387,14 @@ Widget sintiaButtonCustomPreview() => Column(
       label: 'Sin radio',
       variant: SintiaButtonVariant.outline,
       borderRadius: BorderRadius.zero,
+      onPressed: () {},
+    ),
+    SintiaButton(
+      label: 'Texto grande',
+      labelStyle: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w900,
+      ),
       onPressed: () {},
     ),
   ],

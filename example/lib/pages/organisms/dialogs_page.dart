@@ -69,6 +69,21 @@ class DialogsPage extends StatelessWidget {
     );
   }
 
+  Future<void> _showCustom(BuildContext context) {
+    return SintiaDialog.show<void>(
+      context: context,
+      dialog: const SintiaDialog(
+        title: 'Oferta especial',
+        message: 'Aplica antes de que termine el mes.',
+        width: 320,
+        height: 220,
+        titleColor: Colors.amber,
+        titleStyle: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+        showCloseButton: true,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ShowcaseList(
@@ -92,6 +107,19 @@ class DialogsPage extends StatelessWidget {
               label: 'Con formulario',
               variant: SintiaButtonVariant.secondary,
               onPressed: () => _showContent(context),
+            ),
+          ],
+        ),
+        ShowcaseSection(
+          title: 'Tamaño y título personalizados',
+          description:
+              'width, height, titleColor y titleStyle pintan o redimensionan '
+              'un diálogo puntual por fuera del tema.',
+          children: <Widget>[
+            SintiaButton(
+              label: 'Personalizado',
+              variant: SintiaButtonVariant.outline,
+              onPressed: () => _showCustom(context),
             ),
           ],
         ),

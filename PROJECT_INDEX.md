@@ -22,6 +22,7 @@ UI reutilizable entre features.
 | `SintiaText` | `lib/src/atoms/sintia_text.dart` | Texto que hereda `bodyMedium` si no recibe estilo |
 | `SintiaButton` | `lib/src/atoms/sintia_button.dart` | Botón con 5 variantes, 3 tamaños y carga automática si `onPressed` es asíncrono |
 | `SintiaTextField` | `lib/src/atoms/sintia_text_field.dart` | Campo de texto con etiqueta externa, ayuda, error y toggle de contraseña |
+| `SintiaDropdown<T>` | `lib/src/atoms/sintia_dropdown.dart` | Selector desplegable con la decoración de `SintiaTextField` |
 | `SintiaChip` | `lib/src/atoms/sintia_chip.dart` | Etiqueta, chip de estado (`SintiaStatus`) o filtro seleccionable |
 | `SintiaIconAction` | `lib/src/atoms/sintia_icon_action.dart` | Botón de ícono compacto con badge opcional |
 | `SintiaLoader` | `lib/src/atoms/sintia_loader.dart` | Indicador de carga Lottie empaquetado en el paquete |
@@ -124,3 +125,4 @@ Datos que las pantallas declaran para configurar componentes.
 | `SintiaAppBarAction` | `lib/src/models/sintia_app_bar_action.dart` | Acción de la app bar (ícono, callback, badge, tooltip) |
 | `SintiaListItem` | `lib/src/models/sintia_list_item.dart` | Elemento de `SintiaListSection` |
 | `SintiaSegment<T>` | `lib/src/models/sintia_segment.dart` | Opción de `SintiaSegmentedControl` (valor genérico, label, ícono, tooltip) |
+| `SintiaDropdownItem<T>` | `lib/src/models/sintia_dropdown_item.dart` | Opción de `SintiaDropdown` (valor genérico, label, ícono, enabled) |

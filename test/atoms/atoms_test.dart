@@ -269,6 +269,26 @@ void main() {
       final Set<WidgetState> states = <WidgetState>{};
       expect(button.style?.backgroundColor?.resolve(states), Colors.amber);
     });
+
+    testWidgets('labelStyle override cambia la tipografía del texto', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaButton(
+            label: 'Continuar',
+            labelStyle: const TextStyle(fontSize: 20),
+            onPressed: () {},
+          ),
+        ),
+      );
+
+      final FilledButton button = tester.widget<FilledButton>(
+        find.byType(FilledButton),
+      );
+      final Set<WidgetState> states = <WidgetState>{};
+      expect(button.style?.textStyle?.resolve(states)?.fontSize, 20);
+    });
   });
 
   group('SintiaTextField', () {
@@ -387,6 +407,112 @@ void main() {
         tester.widget<Text>(find.text('Correo')).style?.color,
         Colors.teal,
       );
+    });
+  });
+
+  group('SintiaDropdown', () {
+    const List<SintiaDropdownItem<String>> items = <SintiaDropdownItem<String>>[
+      SintiaDropdownItem<String>(value: 'co', label: 'Colombia'),
+      SintiaDropdownItem<String>(value: 'mx', label: 'México'),
+    ];
+
+    testWidgets('muestra la etiqueta sobre el campo', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaDropdown<String>(
+            label: 'País',
+            items: items,
+            onChanged: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.text('País'), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.text('País')).dy,
+        lessThan(
+          tester.getTopLeft(find.byType(DropdownButtonFormField<String>)).dy,
+        ),
+      );
+    });
+
+    testWidgets('muestra el hint sin valor elegido', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaDropdown<String>(
+            hint: 'Elige un país',
+            items: items,
+            onChanged: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.text('Elige un país'), findsOneWidget);
+    });
+
+    testWidgets('notifica el valor elegido al tocar una opción', (
+      WidgetTester tester,
+    ) async {
+      String? changed;
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaDropdown<String>(
+            items: items,
+            onChanged: (String? value) => changed = value,
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('México').last);
+      await tester.pumpAndSettle();
+
+      expect(changed, 'mx');
+    });
+
+    testWidgets('deshabilitado no notifica', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaDropdown<String>(
+            items: items,
+            enabled: false,
+            onChanged: (_) {},
+          ),
+        ),
+      );
+
+      final DropdownButtonFormField<String> field = tester
+          .widget<DropdownButtonFormField<String>>(
+            find.byType(DropdownButtonFormField<String>),
+          );
+      expect(field.onChanged, isNull);
+    });
+
+    testWidgets('itemTextStyle, menuBackgroundColor y borderRadius override', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaDropdown<String>(
+            items: items,
+            itemTextStyle: const TextStyle(fontWeight: FontWeight.bold),
+            menuBackgroundColor: Colors.amber,
+            borderRadius: const BorderRadius.all(Radius.circular(4)),
+            onChanged: (_) {},
+          ),
+        ),
+      );
+
+      final DropdownButton<String> button = tester
+          .widget<DropdownButton<String>>(find.byType(DropdownButton<String>));
+      expect(button.style?.fontWeight, FontWeight.bold);
+      expect(button.dropdownColor, Colors.amber);
+      expect(button.borderRadius, const BorderRadius.all(Radius.circular(4)));
     });
   });
 

@@ -1,3 +1,32 @@
+## 1.3.0
+
+Selector desplegable, personalización del diálogo y overrides puntuales de
+color, radio y tipografía para `SintiaButton` y `SintiaSegmentedControl`.
+Compatible con la 1.2.0: no cambia ninguna API existente.
+
+### Agregado
+
+* `SintiaDropdown<T>`: selector desplegable con la misma decoración que
+  `SintiaTextField` (relleno, borde, radio y estados de foco y error desde
+  `inputDecorationTheme`), así que ambos conviven en un formulario sin
+  desentonar. Soporta etiqueta externa, hint, ayuda, error, ícono, validación
+  de formulario y `itemTextStyle`/`menuBackgroundColor`/`borderRadius` como
+  overrides puntuales del menú desplegado.
+* `SintiaDropdownItem<T>`: modelo de cada opción (valor genérico, `label`,
+  `icon` y `enabled`).
+* `SintiaButton.labelStyle`: tipografía de la etiqueta (peso, tamaño,
+  familia) sin tocar el color, que sigue saliendo de `foregroundColor`.
+* `SintiaSegmentedControl.selectedBackgroundColor`, `.selectedForegroundColor`,
+  `.unselectedBackgroundColor`, `.unselectedForegroundColor`,
+  `.selectedLabelStyle`, `.unselectedLabelStyle` y `.borderRadius`: overrides
+  puntuales de color, radio y estilo de texto, por separado para el segmento
+  activo y los inactivos.
+* `SintiaDialog.width` y `.height`: dimensiones fijas para un diálogo puntual;
+  con `height` fijo, el contenido que no entra scrollea en vez de desbordar.
+* `SintiaDialog.titleColor` y `.titleStyle`: color y tipografía del título
+  por separado, con la misma precedencia que `SintiaButton.foregroundColor`
+  / `.labelStyle`.
+
 ## 1.2.0
 
 Overrides puntuales de color y radio para `SintiaButton` y `SintiaChip`.

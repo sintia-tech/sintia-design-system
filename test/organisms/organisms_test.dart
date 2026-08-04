@@ -240,6 +240,45 @@ void main() {
       await tester.pumpWidget(wrapSintia(const SintiaDialog(title: 'Aviso')));
       expect(find.byIcon(Icons.close), findsNothing);
     });
+
+    testWidgets('width y height fijan el tamaño del diálogo', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          const SintiaDialog(title: 'Aviso', width: 320, height: 220),
+        ),
+      );
+
+      final Size size = tester.getSize(
+        find
+            .descendant(
+              of: find.byType(Dialog),
+              matching: find.byType(SizedBox),
+            )
+            .first,
+      );
+      expect(size.width, 320);
+      expect(size.height, 220);
+    });
+
+    testWidgets('titleColor y titleStyle override el título', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          const SintiaDialog(
+            title: 'Aviso',
+            titleColor: Colors.amber,
+            titleStyle: TextStyle(fontSize: 22),
+          ),
+        ),
+      );
+
+      final Text text = tester.widget<Text>(find.text('Aviso'));
+      expect(text.style?.color, Colors.amber);
+      expect(text.style?.fontSize, 22);
+    });
   });
 
   group('SintiaListSection', () {

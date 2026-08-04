@@ -34,6 +34,26 @@ import '../tokens/sintia_spacing.dart';
 ///   onChanged: (String value) => setState(() => locale = value),
 /// );
 /// ```
+///
+/// [selectedBackgroundColor], [selectedForegroundColor],
+/// [unselectedBackgroundColor], [unselectedForegroundColor],
+/// [selectedLabelStyle], [unselectedLabelStyle] y [borderRadius] son
+/// overrides puntuales para un selector que necesita salirse del tema (un
+/// acento propio del diseño, por ejemplo):
+///
+/// ```dart
+/// SintiaSegmentedControl<String>(
+///   value: locale,
+///   segments: const <SintiaSegment<String>>[
+///     SintiaSegment<String>(value: 'fr', label: 'FR'),
+///     SintiaSegment<String>(value: 'en', label: 'EN'),
+///   ],
+///   selectedBackgroundColor: Colors.amber,
+///   selectedForegroundColor: Colors.black,
+///   unselectedForegroundColor: Colors.white70,
+///   onChanged: (String value) => setState(() => locale = value),
+/// );
+/// ```
 class SintiaSegmentedControl<T> extends StatelessWidget {
   const SintiaSegmentedControl({
     required this.segments,
@@ -42,6 +62,13 @@ class SintiaSegmentedControl<T> extends StatelessWidget {
     super.key,
     this.size = SintiaSize.medium,
     this.expanded = false,
+    this.selectedBackgroundColor,
+    this.selectedForegroundColor,
+    this.unselectedBackgroundColor,
+    this.unselectedForegroundColor,
+    this.selectedLabelStyle,
+    this.unselectedLabelStyle,
+    this.borderRadius,
     this.semanticIdentifier,
   });
 
@@ -60,6 +87,36 @@ class SintiaSegmentedControl<T> extends StatelessWidget {
 
   /// Ocupa todo el ancho disponible repartiéndolo en segmentos iguales.
   final bool expanded;
+
+  /// Color de fondo del segmento activo. Si es null, usa
+  /// `colorScheme.primary`.
+  final Color? selectedBackgroundColor;
+
+  /// Color del texto y el ícono del segmento activo. Si es null, usa
+  /// `colorScheme.onPrimary`.
+  final Color? selectedForegroundColor;
+
+  /// Color de fondo de los segmentos inactivos. Si es null, quedan
+  /// transparentes.
+  final Color? unselectedBackgroundColor;
+
+  /// Color del texto y el ícono de los segmentos inactivos. Si es null,
+  /// usa `colorScheme.onSurfaceVariant`.
+  final Color? unselectedForegroundColor;
+
+  /// Estilo del texto del segmento activo (peso, tamaño, familia). El color
+  /// sigue saliendo de [selectedForegroundColor]. Si es null, usa el estilo
+  /// base de [size] en semi-negrita.
+  final TextStyle? selectedLabelStyle;
+
+  /// Estilo del texto de los segmentos inactivos. El color sigue saliendo
+  /// de [unselectedForegroundColor]. Si es null, usa el estilo base de
+  /// [size] en peso medio.
+  final TextStyle? unselectedLabelStyle;
+
+  /// Radio de borde del selector y de cada segmento. Si es null, usa
+  /// `SintiaRadius.borderFull`.
+  final BorderRadius? borderRadius;
 
   /// Identificador semántico para pruebas de automatización.
   final String? semanticIdentifier;
@@ -124,6 +181,13 @@ class SintiaSegmentedControl<T> extends StatelessWidget {
       horizontalPadding: _horizontalPadding,
       iconSize: _iconSize,
       labelStyle: labelStyle,
+      selectedBackgroundColor: selectedBackgroundColor,
+      selectedForegroundColor: selectedForegroundColor,
+      unselectedBackgroundColor: unselectedBackgroundColor,
+      unselectedForegroundColor: unselectedForegroundColor,
+      selectedLabelStyle: selectedLabelStyle,
+      unselectedLabelStyle: unselectedLabelStyle,
+      borderRadius: borderRadius,
       onTap: selected ? null : () => onChanged(segment.value),
     );
   }
@@ -141,6 +205,13 @@ class _SintiaSegmentButton extends StatelessWidget {
     this.icon,
     this.tooltip,
     this.labelStyle,
+    this.selectedBackgroundColor,
+    this.selectedForegroundColor,
+    this.unselectedBackgroundColor,
+    this.unselectedForegroundColor,
+    this.selectedLabelStyle,
+    this.unselectedLabelStyle,
+    this.borderRadius,
   });
 
   final bool selected;
@@ -154,31 +225,44 @@ class _SintiaSegmentButton extends StatelessWidget {
   final IconData? icon;
   final String? tooltip;
   final TextStyle? labelStyle;
+  final Color? selectedBackgroundColor;
+  final Color? selectedForegroundColor;
+  final Color? unselectedBackgroundColor;
+  final Color? unselectedForegroundColor;
+  final TextStyle? selectedLabelStyle;
+  final TextStyle? unselectedLabelStyle;
+  final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = context.colorScheme;
+    final Color background = selected
+        ? (selectedBackgroundColor ?? colorScheme.primary)
+        : (unselectedBackgroundColor ?? Colors.transparent);
     final Color foreground = selected
-        ? colorScheme.onPrimary
-        : colorScheme.onSurfaceVariant;
+        ? (selectedForegroundColor ?? colorScheme.onPrimary)
+        : (unselectedForegroundColor ?? colorScheme.onSurfaceVariant);
+    final BorderRadius radius = borderRadius ?? SintiaRadius.borderFull;
 
     final String? label = this.label;
     final IconData? icon = this.icon;
     final String? tooltip = this.tooltip;
+    final TextStyle? textStyle =
+        (selected
+                ? selectedLabelStyle ?? labelStyle?.semiBold
+                : unselectedLabelStyle ?? labelStyle?.medium)
+            ?.withColor(foreground);
 
     final Widget button = AnimatedContainer(
       duration: SintiaDuration.fast,
       height: height,
-      decoration: BoxDecoration(
-        color: selected ? colorScheme.primary : Colors.transparent,
-        borderRadius: SintiaRadius.borderFull,
-      ),
+      decoration: BoxDecoration(color: background, borderRadius: radius),
       child: Material(
         color: Colors.transparent,
-        borderRadius: SintiaRadius.borderFull,
+        borderRadius: radius,
         child: InkWell(
           onTap: onTap,
-          borderRadius: SintiaRadius.borderFull,
+          borderRadius: radius,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: Row(
@@ -187,13 +271,7 @@ class _SintiaSegmentButton extends StatelessWidget {
               spacing: SintiaSpacing.extraSmall,
               children: <Widget>[
                 if (icon != null) Icon(icon, size: iconSize, color: foreground),
-                if (label != null)
-                  Text(
-                    label,
-                    style:
-                        (selected ? labelStyle?.semiBold : labelStyle?.medium)
-                            ?.withColor(foreground),
-                  ),
+                if (label != null) Text(label, style: textStyle),
               ],
             ),
           ),
@@ -237,6 +315,20 @@ Widget sintiaSegmentedControlIconsPreview() => SintiaSegmentedControl<bool>(
       icon: Icons.grid_view_outlined,
     ),
   ],
+  onChanged: (_) {},
+);
+
+@SintiaPreview(name: 'Personalizado', group: 'SintiaSegmentedControl')
+Widget sintiaSegmentedControlCustomPreview() => SintiaSegmentedControl<String>(
+  value: 'fr',
+  segments: const <SintiaSegment<String>>[
+    SintiaSegment<String>(value: 'fr', label: 'FR'),
+    SintiaSegment<String>(value: 'en', label: 'EN'),
+  ],
+  selectedBackgroundColor: Colors.amber,
+  selectedForegroundColor: Colors.black,
+  unselectedForegroundColor: Colors.black54,
+  borderRadius: const BorderRadius.all(Radius.circular(4)),
   onChanged: (_) {},
 );
 // coverage:ignore-end

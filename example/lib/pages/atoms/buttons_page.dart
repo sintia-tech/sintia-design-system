@@ -108,10 +108,10 @@ class ButtonsPage extends StatelessWidget {
           ],
         ),
         ShowcaseSection(
-          title: 'Color y radio personalizados',
+          title: 'Color, tipografía y radio personalizados',
           description:
-              'backgroundColor, foregroundColor y borderRadius pintan un '
-              'botón puntual por fuera de su variante o del tema.',
+              'backgroundColor, foregroundColor, labelStyle y borderRadius '
+              'pintan un botón puntual por fuera de su variante o del tema.',
           children: <Widget>[
             SintiaButton(
               label: 'Amarillo',
@@ -123,6 +123,14 @@ class ButtonsPage extends StatelessWidget {
               label: 'Sin radio',
               variant: SintiaButtonVariant.outline,
               borderRadius: BorderRadius.zero,
+              onPressed: () {},
+            ),
+            SintiaButton(
+              label: 'Texto grande',
+              labelStyle: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+              ),
               onPressed: () {},
             ),
           ],

@@ -138,6 +138,7 @@ Se leen en cualquier parte con `context.statusColors.success`.
 | `SintiaText` | Texto que nunca queda sin estilo (hereda `bodyMedium`) |
 | `SintiaButton` | 5 variantes, 3 tamaños e indicador de carga automático |
 | `SintiaTextField` | Campo con etiqueta externa, ayuda, error y contraseña |
+| `SintiaDropdown<T>` | Selector desplegable con la misma decoración que `SintiaTextField` |
 | `SintiaChip` | Etiqueta, chip de estado o filtro seleccionable (relleno de marca al seleccionar) |
 | `SintiaIconAction` | Botón de ícono compacto con badge |
 | `SintiaLoader` | Indicador Lottie empaquetado en el paquete |
@@ -158,7 +159,9 @@ SintiaButton(
 `SintiaButton` y `SintiaChip` aceptan `backgroundColor`, `foregroundColor` y
 `borderRadius` para un caso puntual que necesita salirse de la variante o del
 tema (un acento propio del diseño, por ejemplo). Para toda la app, la vía
-sigue siendo `SintiaTheme` / `*ButtonThemeData` / `ChipThemeData`:
+sigue siendo `SintiaTheme` / `*ButtonThemeData` / `ChipThemeData`. Cualquiera
+de estos colores acepta opacidad: `Colors.amber.withValues(alpha: 0.4)`, sin
+overrides adicionales.
 
 ```dart
 SintiaButton(
@@ -169,6 +172,17 @@ SintiaButton(
 );
 
 SintiaChip(label: 'FR', selected: true, backgroundColor: Colors.amber);
+```
+
+`SintiaButton.labelStyle` cambia la tipografía de la etiqueta (peso, tamaño,
+familia) sin tocar el color, que sigue saliendo de `foregroundColor`:
+
+```dart
+SintiaButton(
+  label: 'Continuar',
+  labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+  onPressed: () {},
+);
 ```
 
 La etiqueta que `SintiaTextField` dibuja **sobre** el campo se configura una
@@ -183,6 +197,28 @@ const SintiaThemeConfig config = SintiaThemeConfig(
 
 Viaja al tema como `inputDecorationTheme.labelStyle`. Si un campo suelto
 necesita otra cosa, `SintiaTextField.labelStyle` tiene precedencia.
+
+`SintiaDropdown<T>` hereda el relleno, el borde y el radio de
+`inputDecorationTheme`, así que convive con `SintiaTextField` en un
+formulario sin desentonar. Las opciones se declaran como datos con
+`SintiaDropdownItem<T>` (genérico, con ícono opcional):
+
+```dart
+SintiaDropdown<String>(
+  label: 'País',
+  hint: 'Elige un país',
+  value: country,
+  items: const <SintiaDropdownItem<String>>[
+    SintiaDropdownItem<String>(value: 'co', label: 'Colombia'),
+    SintiaDropdownItem<String>(value: 'mx', label: 'México'),
+  ],
+  onChanged: (String? value) => setState(() => country = value),
+);
+```
+
+`itemTextStyle`, `menuBackgroundColor` y `borderRadius` son overrides
+puntuales del menú desplegado para un caso que necesita salirse del tema; el
+resto del campo (relleno, borde) sigue viniendo de `inputDecorationTheme`.
 
 ### Moléculas
 
@@ -219,6 +255,23 @@ SintiaSegmentedControl<String>(
 Para varias selecciones a la vez el componente es `SintiaChip` con
 `onSelected`; para un booleano suelto, el `Switch` de Material.
 
+`SintiaSegmentedControl` también acepta overrides puntuales de color, radio y
+estilo de texto, por separado para el segmento activo y los inactivos:
+
+```dart
+SintiaSegmentedControl<String>(
+  value: locale,
+  segments: const <SintiaSegment<String>>[
+    SintiaSegment<String>(value: 'fr', label: 'FR'),
+    SintiaSegment<String>(value: 'en', label: 'EN'),
+  ],
+  selectedBackgroundColor: Colors.amber,
+  selectedForegroundColor: Colors.black,
+  unselectedForegroundColor: Colors.black54,
+  onChanged: (String value) => setState(() => locale = value),
+);
+```
+
 ### Organismos
 
 | Componente | Para qué |
@@ -228,6 +281,22 @@ Para varias selecciones a la vez el componente es `SintiaChip` con
 | `SintiaDialog` | Diálogo compuesto por ranuras |
 | `SintiaListSection` | Sección con encabezado, acción y elementos |
 | `SintiaProfileHeader` | Cabecera de una entidad |
+
+`SintiaDialog` acepta `width` y `height` para un diálogo que necesita salirse
+del tamaño de contenido (con `height` fijo, scrollea si el contenido no
+entra), y `titleColor`/`titleStyle` para el título, con la misma separación
+color/tipografía que `SintiaButton`:
+
+```dart
+SintiaDialog(
+  title: 'Oferta especial',
+  message: 'Aplica antes de que termine el mes.',
+  width: 320,
+  height: 220,
+  titleColor: Colors.amber,
+  titleStyle: const TextStyle(fontWeight: FontWeight.w900),
+);
+```
 
 ### Plantillas
 

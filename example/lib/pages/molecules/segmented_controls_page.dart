@@ -102,6 +102,24 @@ class _SegmentedControlsPageState extends State<SegmentedControlsPage> {
             ),
           ],
         ),
+        ShowcaseSection(
+          title: 'Color y radio personalizados',
+          description:
+              'Los overrides de color, radio y estilo de texto pintan el '
+              'selector por fuera del tema, activo e inactivo por separado.',
+          children: <Widget>[
+            SintiaSegmentedControl<String>(
+              value: _locale,
+              segments: _locales,
+              size: SintiaSize.small,
+              selectedBackgroundColor: Colors.amber,
+              selectedForegroundColor: Colors.black,
+              unselectedForegroundColor: Colors.black54,
+              borderRadius: const BorderRadius.all(Radius.circular(4)),
+              onChanged: (String value) => setState(() => _locale = value),
+            ),
+          ],
+        ),
       ],
     );
   }

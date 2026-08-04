@@ -647,6 +647,69 @@ void main() {
       expect(find.byIcon(Icons.grid_view_outlined), findsOneWidget);
       expect(find.byType(Text), findsNothing);
     });
+
+    testWidgets('los overrides de color y radio ganan sobre el tema', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaSegmentedControl<String>(
+            segments: segments,
+            value: 'es',
+            selectedBackgroundColor: Colors.amber,
+            selectedForegroundColor: Colors.black,
+            unselectedForegroundColor: Colors.white70,
+            borderRadius: const BorderRadius.all(Radius.circular(4)),
+            onChanged: (_) {},
+          ),
+        ),
+      );
+
+      BoxDecoration decorationOf(String label) {
+        return tester
+                .widget<Container>(
+                  find
+                      .ancestor(
+                        of: find.text(label),
+                        matching: find.byType(Container),
+                      )
+                      .first,
+                )
+                .decoration!
+            as BoxDecoration;
+      }
+
+      expect(decorationOf('Español').color, Colors.amber);
+      expect(
+        decorationOf('Español').borderRadius,
+        const BorderRadius.all(Radius.circular(4)),
+      );
+      expect(
+        tester.widget<Text>(find.text('Español')).style?.color,
+        Colors.black,
+      );
+      expect(
+        tester.widget<Text>(find.text('EN')).style?.color,
+        Colors.white70,
+      );
+    });
+
+    testWidgets('los estilos de etiqueta ganan sobre el peso automático', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapSintia(
+          SintiaSegmentedControl<String>(
+            segments: segments,
+            value: 'es',
+            selectedLabelStyle: const TextStyle(fontSize: 20),
+            onChanged: (_) {},
+          ),
+        ),
+      );
+
+      expect(tester.widget<Text>(find.text('Español')).style?.fontSize, 20);
+    });
   });
 }
 
